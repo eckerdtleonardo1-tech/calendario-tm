@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestión de pagos mensuales - Aplicación simple y funcional">
+  <title>Gestión de Pagos Mensuales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f5f5f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 2.5rem 2rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid #e0dfda;
+      background: #fafaf7;
+    }
+
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #111;
+    }
+
+    .header p {
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      color: #888;
+      font-weight: 400;
+    }
+
+    /* ── Grid ── */
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+
+    /* ── Month Card ── */
+    .month-card {
+      background: #fff;
+      border: 1px solid #e8e7e3;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .month-card:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .month-header {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid #f0efeb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .month-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #222;
+    }
+
+    .month-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .month-count {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #aaa;
+      background: #f5f5f2;
+      padding: 0.2em 0.6em;
+      border-radius: 20px;
+    }
+
+    .month-paid-count {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #3ba55d;
+      background: rgba(59, 165, 93, 0.08);
+      padding: 0.2em 0.6em;
+      border-radius: 20px;
+    }
+
+    /* ── Input Row ── */
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid #f0efeb;
+    }
+
+    .input-row input {
+      flex: 1;
+      border: 1px solid #e0dfda;
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: #333;
+      background: #fafaf7;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .input-row input::placeholder {
+      color: #bbb;
+    }
+
+    .input-row input:focus {
+      border-color: #ccc;
+      background: #fff;
+    }
+
+    .btn-add {
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-add:hover {
+      background: #333;
+    }
+
+    .btn-add:active {
+      transform: scale(0.97);
+    }
+
+    /* ── Search Row ── */
+    .search-row {
+      padding: 0 1.2rem;
+      border-bottom: 1px solid #f0efeb;
+      display: none;
+    }
+
+    .search-row.visible {
+      display: block;
+      padding: 0.6rem 1.2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 1px solid #e8e7e3;
+      border-radius: 8px;
+      padding: 0.45rem 0.7rem 0.45rem 2rem;
+      font-size: 0.78rem;
+      font-family: inherit;
+      color: #333;
+      background: #fafaf7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 0.65rem center;
+      outline: none;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: #bbb;
+    }
+
+    .search-input:focus {
+      border-color: #ccc;
+      background-color: #fff;
+    }
+
+    /* ── Names List ── */
+    .list-wrapper {
+      max-height: 220px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ddd transparent;
+    }
+
+    .list-wrapper::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .list-wrapper::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .list-wrapper::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 10px;
+    }
+
+    .names-list {
+      list-style: none;
+      min-height: 2.5rem;
+    }
+
+    .names-list:empty::after {
+      content: 'Sin registros';
+      display: block;
+      padding: 1.2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #ccc;
+      font-style: italic;
+    }
+
+    .no-results {
+      display: none;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #bbb;
+      font-style: italic;
+    }
+
+    .no-results.visible {
+      display: block;
+    }
+
+    /* ── Name Item ── */
+    .name-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1.2rem;
+      border-bottom: 1px solid #f7f7f4;
+      animation: fadeSlideIn 0.25s ease;
+    }
+
+    .name-item:last-child {
+      border-bottom: none;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Status Indicator ── */
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
+      border: none;
+      padding: 0;
+    }
+
+    .status-dot.unpaid {
+      background-color: #e25555;
+      box-shadow: 0 0 0 3px rgba(226, 85, 85, 0.15);
+    }
+
+    .status-dot.paid {
+      background-color: #3ba55d;
+      box-shadow: 0 0 0 3px rgba(59, 165, 93, 0.15);
+    }
+
+    .person-name {
+      flex: 1;
+      font-size: 0.84rem;
+      font-weight: 450;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .paid-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #3ba55d;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateX(4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .paid-label.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .btn-delete {
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0.15rem;
+      border-radius: 4px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-delete:hover {
+      color: #e25555;
+      background: rgba(226, 85, 85, 0.08);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .months-grid {
+        padding: 0.75rem;
+        gap: 0.75rem;
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        padding: 1.8rem 1rem 1.2rem;
+      }
+
+      .header h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Pagos Mensuales</h1>
+    <p>Registra y controla el estado de los pagos de cada mes</p>
+  </header>
+
+  <main class="months-grid" id="monthsGrid"></main>
+
+  <script>
+    const MONTHS = [
+      'Enero', 'Febrero', 'Marzo', 'Abril',
+      'Mayo', 'Junio', 'Julio', 'Agosto',
+      'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    const STORAGE_KEY = 'pagos_mensuales_data';
+
+    /* ── Persistencia con localStorage ── */
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    const appData = loadData();
+
+    /* ── Actualizar contador del mes ── */
+    function updateCount(monthIndex) {
+      const key = MONTHS[monthIndex];
+      const items = appData[key] || [];
+      const countEl = document.getElementById(`count-${monthIndex}`);
+      const paidEl = document.getElementById(`paid-${monthIndex}`);
+      const total = items.length;
+      const paidCount = items.filter(e => e.paid).length;
+
+      countEl.textContent = total === 0 ? '' : total;
+      paidEl.textContent = paidCount > 0 ? `${paidCount}/${total}` : '';
+    }
+
+    /* ── Crear elemento de nombre ── */
+    function createNameElement(name, paid, monthIndex, itemIndex) {
+      const li = document.createElement('li');
+      li.className = 'name-item';
+
+      // Dot de estado
+      const dot = document.createElement('button');
+      dot.className = `status-dot ${paid ? 'paid' : 'unpaid'}`;
+      dot.title = paid ? 'Marcar como no pagado' : 'Marcar como pagado';
+      dot.setAttribute('aria-label', paid ? 'Pagado – clic para desmarcar' : 'No pagado – clic para marcar');
+
+      // Nombre
+      const span = document.createElement('span');
+      span.className = 'person-name';
+      span.textContent = name;
+
+      // Etiqueta "Pago"
+      const label = document.createElement('span');
+      label.className = `paid-label ${paid ? 'visible' : ''}`;
+      label.textContent = 'Pago';
+
+      // Botón eliminar
+      const btnDel = document.createElement('button');
+      btnDel.className = 'btn-delete';
+      btnDel.innerHTML = '&times;';
+      btnDel.title = 'Eliminar';
+      btnDel.setAttribute('aria-label', `Eliminar ${name}`);
+
+      // Toggle de estado
+      dot.addEventListener('click', () => {
+        const key = MONTHS[monthIndex];
+        const entry = appData[key][itemIndex];
+        entry.paid = !entry.paid;
+        saveData(appData);
+
+        dot.className = `status-dot ${entry.paid ? 'paid' : 'unpaid'}`;
+        dot.title = entry.paid ? 'Marcar como no pagado' : 'Marcar como pagado';
+        label.className = `paid-label ${entry.paid ? 'visible' : ''}`;
+        updateCount(monthIndex);
+      });
+
+      // Eliminar
+      btnDel.addEventListener('click', () => {
+        const key = MONTHS[monthIndex];
+        appData[key].splice(itemIndex, 1);
+        saveData(appData);
+        renderList(monthIndex);
+      });
+
+      li.append(dot, span, label, btnDel);
+      return li;
+    }
+
+    /* ── Renderizar lista de un mes ── */
+    function renderList(monthIndex) {
+      const key = MONTHS[monthIndex];
+      const list = document.getElementById(`list-${monthIndex}`);
+      const items = appData[key] || [];
+
+      list.innerHTML = '';
+      items.forEach((entry, i) => {
+        list.appendChild(createNameElement(entry.name, entry.paid, monthIndex, i));
+      });
+
+      updateCount(monthIndex);
+      toggleSearchVisibility(monthIndex);
+
+      // Re-apply active filter
+      const searchInput = document.getElementById(`search-${monthIndex}`);
+      if (searchInput && searchInput.value.trim()) {
+        filterList(monthIndex);
+      }
+    }
+
+    /* ── Mostrar/ocultar buscador según cantidad ── */
+    function toggleSearchVisibility(monthIndex) {
+      const key = MONTHS[monthIndex];
+      const items = appData[key] || [];
+      const searchRow = document.getElementById(`search-row-${monthIndex}`);
+      if (items.length >= 4) {
+        searchRow.classList.add('visible');
+      } else {
+        searchRow.classList.remove('visible');
+        // Clear search when hiding
+        const searchInput = document.getElementById(`search-${monthIndex}`);
+        if (searchInput) searchInput.value = '';
+      }
+    }
+
+    /* ── Filtrar lista por búsqueda ── */
+    function filterList(monthIndex) {
+      const searchInput = document.getElementById(`search-${monthIndex}`);
+      const query = searchInput.value.trim().toLowerCase();
+      const list = document.getElementById(`list-${monthIndex}`);
+      const items = list.querySelectorAll('.name-item');
+      const noResults = document.getElementById(`no-results-${monthIndex}`);
+      let matchCount = 0;
+
+      items.forEach(item => {
+        const name = item.querySelector('.person-name').textContent.toLowerCase();
+        if (!query || name.includes(query)) {
+          item.style.display = '';
+          matchCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      noResults.classList.toggle('visible', query && matchCount === 0);
+    }
+
+    /* ── Agregar nombre ── */
+    function addName(monthIndex) {
+      const input = document.getElementById(`input-${monthIndex}`);
+      const name = input.value.trim();
+      if (!name) return;
+
+      const key = MONTHS[monthIndex];
+      if (!appData[key]) appData[key] = [];
+
+      appData[key].push({ name, paid: false });
+      saveData(appData);
+      renderList(monthIndex);
+
+      input.value = '';
+      input.focus();
+    }
+
+    /* ── Construir la interfaz ── */
+    function init() {
+      const grid = document.getElementById('monthsGrid');
+
+      MONTHS.forEach((month, i) => {
+        const card = document.createElement('article');
+        card.className = 'month-card';
+        card.innerHTML = `
+          <div class="month-header">
+            <span class="month-name">${month}</span>
+            <div class="month-badges">
+              <span class="month-paid-count" id="paid-${i}"></span>
+              <span class="month-count" id="count-${i}"></span>
+            </div>
+          </div>
+          <div class="input-row">
+            <input type="text" id="input-${i}" placeholder="Nombre..." aria-label="Nombre para ${month}">
+            <button class="btn-add" id="btn-${i}">Agregar</button>
+          </div>
+          <div class="search-row" id="search-row-${i}">
+            <input type="text" class="search-input" id="search-${i}" placeholder="Buscar..." aria-label="Buscar en ${month}">
+          </div>
+          <div class="list-wrapper">
+            <ul class="names-list" id="list-${i}"></ul>
+            <div class="no-results" id="no-results-${i}">Sin coincidencias</div>
+          </div>
+        `;
+        grid.appendChild(card);
+
+        // Eventos
+        document.getElementById(`btn-${i}`).addEventListener('click', () => addName(i));
+        document.getElementById(`input-${i}`).addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') addName(i);
+        });
+        document.getElementById(`search-${i}`).addEventListener('input', () => filterList(i));
+
+        renderList(i);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
