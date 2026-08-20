@@ -334,12 +334,105 @@
       background: rgba(226, 85, 85, 0.08);
     }
 
+    /* ── Players Section ── */
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+    }
+
+    .player-form {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .player-form input {
+      flex: 1;
+      min-width: 150px;
+      border: 1px solid #e0dfda;
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: #333;
+      background: #fafaf7;
+      outline: none;
+    }
+
+    .player-form input:focus {
+      border-color: #ccc;
+      background: #fff;
+    }
+
+    .player-card {
+      background: #fff;
+      border: 1px solid #e8e7e3;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s ease;
+    }
+    
+    .player-card:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .player-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid #f0efeb;
+      padding-bottom: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    
+    .player-name-disp {
+      font-weight: 600;
+      color: #222;
+      font-size: 1rem;
+      line-height: 1.2;
+      padding-right: 0.5rem;
+    }
+    
+    .player-number-disp {
+      background: #1a1a1a;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    
+    .player-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .player-position-disp {
+      font-size: 0.82rem;
+      color: #666;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
-      .months-grid {
+      .months-grid, .players-grid {
         padding: 0.75rem;
         gap: 0.75rem;
         grid-template-columns: 1fr;
+      }
+
+      .player-form {
+        flex-direction: column;
       }
 
       .header {
@@ -360,6 +453,20 @@
   </header>
 
   <main class="months-grid" id="monthsGrid"></main>
+
+  <header class="header" style="border-top: 1px solid #e0dfda; margin-top: 1rem; padding-top: 2rem; border-bottom: none; background: transparent;">
+    <h1>Fichas de Jugadores</h1>
+    <p>Registra nombre, posición y número de cada jugador</p>
+  </header>
+  
+  <div class="player-form">
+    <input type="text" id="p-name" placeholder="Nombre completo...">
+    <input type="text" id="p-position" placeholder="Posición (ej. Delantero)...">
+    <input type="number" id="p-number" placeholder="Dorsal (ej. 10)...">
+    <button class="btn-add" id="btn-add-player">Agregar Jugador</button>
+  </div>
+  
+  <main class="players-grid" id="playersGrid"></main>
 
   <script>
     const MONTHS = [
@@ -385,6 +492,7 @@
     }
 
     const appData = loadData();
+    if (!appData.players) appData.players = [];
 
     /* ── Actualizar contador del mes ── */
     function updateCount(monthIndex) {
@@ -527,6 +635,59 @@
       input.focus();
     }
 
+    /* ── Renderizar Jugadores ── */
+    function renderPlayers() {
+      const grid = document.getElementById('playersGrid');
+      grid.innerHTML = '';
+      
+      appData.players.forEach((player, i) => {
+        const card = document.createElement('article');
+        card.className = 'player-card';
+        card.innerHTML = `
+          <div class="player-header">
+            <span class="player-name-disp">${player.name}</span>
+            <span class="player-number-disp">#${player.number}</span>
+          </div>
+          <div class="player-footer">
+            <span class="player-position-disp">${player.position}</span>
+            <button class="btn-delete" id="del-player-${i}" title="Eliminar" aria-label="Eliminar ${player.name}">&times;</button>
+          </div>
+        `;
+        grid.appendChild(card);
+        
+        document.getElementById(`del-player-${i}`).addEventListener('click', () => {
+          appData.players.splice(i, 1);
+          saveData(appData);
+          renderPlayers();
+        });
+      });
+    }
+
+    /* ── Agregar Jugador ── */
+    function setupPlayerForm() {
+      const btn = document.getElementById('btn-add-player');
+      const inputName = document.getElementById('p-name');
+      const inputPos = document.getElementById('p-position');
+      const inputNum = document.getElementById('p-number');
+
+      btn.addEventListener('click', () => {
+        const name = inputName.value.trim();
+        const position = inputPos.value.trim();
+        const number = inputNum.value.trim();
+        
+        if (!name) return;
+
+        appData.players.push({ name, position: position || 'Sin posición', number: number || '-' });
+        saveData(appData);
+        renderPlayers();
+
+        inputName.value = '';
+        inputPos.value = '';
+        inputNum.value = '';
+        inputName.focus();
+      });
+    }
+
     /* ── Construir la interfaz ── */
     function init() {
       const grid = document.getElementById('monthsGrid');
@@ -565,6 +726,9 @@
 
         renderList(i);
       });
+
+      setupPlayerForm();
+      renderPlayers();
     }
 
     init();
