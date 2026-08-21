@@ -6,12 +6,17 @@ export const MONTHS = [
   'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
 
+let currentPage = 0;
+const cardsPerPage = 3;
+
 export function initMonths() {
   const grid = document.getElementById('monthsGrid');
+  grid.innerHTML = '';
 
   MONTHS.forEach((month, i) => {
     const card = document.createElement('article');
     card.className = 'month-card';
+    card.id = `month-card-${i}`;
     card.innerHTML = `
       <div class="month-header">
         <span class="month-name">${month}</span>
@@ -42,6 +47,67 @@ export function initMonths() {
 
     renderList(i);
   });
+
+  // Create pagination controls
+  let pagination = document.getElementById('pagination-controls');
+  if (!pagination) {
+    pagination = document.createElement('div');
+    pagination.id = 'pagination-controls';
+    pagination.className = 'pagination-controls';
+    pagination.innerHTML = `
+      <button id="btn-prev" class="btn-page" disabled>&#8592; Anterior</button>
+      <span id="page-indicator">1 / 4</span>
+      <button id="btn-next" class="btn-page">Siguiente &#8594;</button>
+    `;
+    grid.parentNode.insertBefore(pagination, grid.nextSibling);
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePagination();
+      }
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      if (currentPage < 3) {
+        currentPage++;
+        updatePagination();
+      }
+    });
+  }
+
+  updatePagination();
+}
+
+function updatePagination() {
+  for (let i = 0; i < 12; i++) {
+    const card = document.getElementById(`month-card-${i}`);
+    if (card) {
+      if (i >= currentPage * cardsPerPage && i < (currentPage + 1) * cardsPerPage) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  }
+
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const indicator = document.getElementById('page-indicator');
+  
+  if (btnPrev) {
+    btnPrev.disabled = currentPage === 0;
+    btnPrev.style.opacity = currentPage === 0 ? '0.5' : '1';
+    btnPrev.style.cursor = currentPage === 0 ? 'not-allowed' : 'pointer';
+  }
+  if (btnNext) {
+    btnNext.disabled = currentPage === Math.ceil(12 / cardsPerPage) - 1;
+    btnNext.style.opacity = currentPage === Math.ceil(12 / cardsPerPage) - 1 ? '0.5' : '1';
+    btnNext.style.cursor = currentPage === Math.ceil(12 / cardsPerPage) - 1 ? 'not-allowed' : 'pointer';
+  }
+  if (indicator) {
+    indicator.textContent = `${currentPage + 1} / ${Math.ceil(12 / cardsPerPage)}`;
+  }
 }
 
 function updateCount(monthIndex) {
