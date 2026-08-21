@@ -263,7 +263,7 @@ body {
 
 /* ── Names List ── */
 .list-wrapper {
-  max-height: 250px;
+  max-height: 145px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
