@@ -3,46 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Gestión de pagos mensuales - Aplicación simple y funcional">
-  <title>Gestión de Pagos Mensuales</title>
+  <meta name="description" content="Gestión de pagos, plantel y asistencia del equipo">
+  <title>Gestión del Equipo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=2.1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
 </head>
 <body>
 
-  <header class="header">
-    <h1>Pagos Mensuales</h1>
-    <p>Registra y controla el estado de los pagos de cada mes</p>
-  </header>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button class="tab" role="tab" data-view="pagos" aria-controls="view-pagos">
+      <span class="tab-icon" aria-hidden="true">$</span> Pagos
+    </button>
+    <button class="tab" role="tab" data-view="jugadores" aria-controls="view-jugadores">
+      <span class="tab-icon" aria-hidden="true">#</span> Jugadores
+    </button>
+    <button class="tab" role="tab" data-view="asistencia" aria-controls="view-asistencia">
+      <span class="tab-icon" aria-hidden="true">✓</span> Asistencia
+    </button>
+  </nav>
 
-  <main class="months-grid" id="monthsGrid"></main>
+  <!-- ── Pagos ── -->
+  <section class="view" id="view-pagos" role="tabpanel">
+    <header class="header">
+      <h1>Pagos Mensuales</h1>
+      <p>Registra y controla el estado de los pagos de cada mes</p>
+    </header>
 
-  <header class="header player-section-header">
-    <h1>Fichas de Jugadores</h1>
-    <p>Registra nombre, posición y número de cada jugador</p>
-  </header>
-  
-  <div class="player-form">
-    <input type="text" id="p-name" placeholder="Nombre completo...">
-    <input type="text" id="p-position" placeholder="Posición (ej. Delantero)...">
-    <input type="number" id="p-number" placeholder="Dorsal (ej. 10)...">
-    <button class="btn-add" id="btn-add-player">Agregar Jugador</button>
-  </div>
-  
-  <div class="players-table-container">
-    <table class="players-table">
-      <thead>
-        <tr>
-          <th>Dorsal</th>
-          <th>Nombre</th>
-          <th>Posición</th>
-          <th style="width: 50px;">Acción</th>
-        </tr>
-      </thead>
-      <tbody id="playersTbody"></tbody>
-    </table>
-  </div>
+    <div class="stats-bar" id="yearSummary"></div>
+
+    <main class="months-grid" id="monthsGrid"></main>
+  </section>
+
+  <!-- ── Jugadores ── -->
+  <section class="view" id="view-jugadores" role="tabpanel" hidden>
+    <header class="header">
+      <h1>Fichas de Jugadores</h1>
+      <p>Registra nombre, posición y número de cada jugador</p>
+    </header>
+
+    <div class="player-form">
+      <input type="text" id="p-name" placeholder="Nombre completo..." autocomplete="off">
+      <select id="p-position" aria-label="Posición">
+        <option value="">Posición...</option>
+        <option>Arquero</option>
+        <option>Defensor</option>
+        <option>Mediocampista</option>
+        <option>Delantero</option>
+      </select>
+      <input type="number" id="p-number" placeholder="Dorsal (ej. 10)" min="0" max="99">
+      <button class="btn-add" id="btn-add-player">Agregar Jugador</button>
+      <button class="btn-page" id="btn-cancel-edit" hidden>Cancelar</button>
+      <p class="form-error" id="player-form-error" aria-live="polite"></p>
+    </div>
+
+    <div class="players-toolbar">
+      <input type="text" class="search-input" id="p-search" placeholder="Buscar por nombre o dorsal..." aria-label="Buscar jugador">
+      <select id="p-filter-pos" aria-label="Filtrar por posición"></select>
+      <span class="players-count" id="players-count"></span>
+    </div>
+
+    <div class="players-table-container">
+      <table class="players-table">
+        <thead>
+          <tr>
+            <th>Dorsal</th>
+            <th>Nombre</th>
+            <th>Posición</th>
+            <th>Asistencia</th>
+            <th id="th-payment">Pago</th>
+            <th style="width: 80px;"></th>
+          </tr>
+        </thead>
+        <tbody id="playersTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Asistencia ── -->
+  <section class="view" id="view-asistencia" role="tabpanel" hidden>
+    <header class="header">
+      <h1>Asistencia</h1>
+      <p>Tomá lista en cada entrenamiento o partido</p>
+    </header>
+
+    <div class="att-layout">
+      <div class="att-main">
+        <div class="att-datebar">
+          <button class="btn-page btn-square" id="att-prev" title="Día anterior" aria-label="Día anterior">&#8592;</button>
+          <div class="att-date-center">
+            <input type="date" id="att-date" aria-label="Fecha">
+            <span class="att-date-label" id="att-date-label"></span>
+          </div>
+          <button class="btn-page btn-square" id="att-next" title="Día siguiente" aria-label="Día siguiente">&#8594;</button>
+        </div>
+
+        <div class="stats-bar compact" id="att-summary"></div>
+
+        <div class="att-actions">
+          <button class="btn-page" id="att-today">Hoy</button>
+          <button class="btn-add" id="att-all-present">Marcar resto presentes</button>
+          <button class="btn-page btn-danger-ghost" id="att-clear">Borrar día</button>
+        </div>
+
+        <ul class="att-list" id="att-list"></ul>
+      </div>
+
+      <aside class="att-side">
+        <h2>Historial</h2>
+        <p class="att-legend"><span class="c-present">Presentes</span> · <span class="c-absent">Ausentes</span></p>
+        <div class="att-history" id="att-history"></div>
+      </aside>
+    </div>
+  </section>
 
   <script type="module" src="js/main.js"></script>
 </body>
