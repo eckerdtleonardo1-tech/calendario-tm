@@ -907,3 +907,283 @@ body {
   .att-btn { width: 2.4rem; padding: 0.55rem 0; }
   .att-item .player-number-disp { display: none; }
 }
+
+/* ── Planilla ── */
+.sheet-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto 1rem;
+  padding: 0 1.5rem;
+}
+
+.sheet-paper {
+  max-width: 1100px;
+  margin: 0 auto 4rem;
+  padding: 2rem 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.sheet-title {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: underline;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.sheet-practicante {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sheet-practicante span { text-decoration: underline; white-space: nowrap; }
+
+.sheet-practicante input {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+  border: none;
+  border-bottom: 1px solid var(--text-700);
+  padding: 0.3rem 0.2rem;
+  font: 500 0.95rem inherit;
+  font-family: inherit;
+  text-transform: none;
+  background: transparent;
+  outline: none;
+}
+
+.sheet-practicante input:focus { border-bottom-color: var(--primary); }
+
+.sheet-table-wrap { overflow-x: auto; }
+
+.sheet-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.sheet-table th, .sheet-table td {
+  border: 1px solid var(--text-700);
+  padding: 0;
+  vertical-align: middle;
+}
+
+.sheet-table th {
+  padding: 0.45rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  background: var(--bg-main);
+}
+
+.sheet-table th.no-print, .sheet-table td.sheet-actions { border: none; background: transparent; width: 36px; }
+
+.sheet-table td input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 0.55rem 0.5rem;
+  font: inherit;
+  color: var(--text-900);
+  outline: none;
+}
+
+.sheet-table td input:focus { background: var(--primary-ring); }
+.sheet-table td input[type="date"] { min-width: 130px; }
+
+.sheet-firma { width: 140px; text-align: center; }
+.sheet-firma img { display: block; height: 38px; max-width: 130px; margin: 0 auto; object-fit: contain; cursor: pointer; }
+
+.sheet-actions { padding-left: 0.3rem !important; }
+
+.sheet-empty td {
+  border: 1px dashed var(--border-focus) !important;
+  padding: 2rem !important;
+  text-align: center;
+  color: var(--text-500);
+}
+
+/* Diálogo de firma */
+.sign-dialog {
+  margin: auto;
+  width: min(640px, calc(100% - 2rem));
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-float), 0 0 0 1px var(--border);
+}
+
+.sign-dialog::backdrop { background: rgba(15, 23, 42, 0.45); }
+.sign-dialog h3 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+.sign-dialog p { font-size: 0.85rem; color: var(--text-500); margin-bottom: 1rem; }
+
+#sign-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 600 / 220;
+  border: 2px dashed var(--border-focus);
+  border-radius: var(--radius-md);
+  background: var(--bg-main);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.sign-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.sign-actions .spacer { flex: 1; }
+
+@media (max-width: 768px) {
+  .tabs { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  .tab { padding: 0.6rem 0.75rem; flex-shrink: 0; }
+  .sheet-toolbar { padding: 0 1rem; }
+  .sheet-paper { margin: 0 1rem 3rem; padding: 1.25rem 1rem; }
+}
+
+/* ── Impresión: sólo la hoja de la planilla ── */
+@media print {
+  @page { size: A4 landscape; margin: 14mm; }
+  body.printing-sheet { background: #fff; }
+  .printing-sheet .tabs, .printing-sheet .no-print, .printing-sheet .view:not(#view-planilla),
+  .printing-sheet .sheet-actions, .printing-sheet .sign-dialog { display: none !important; }
+  .printing-sheet #view-planilla { display: block !important; animation: none; }
+  .printing-sheet .sheet-paper { border: none; box-shadow: none; padding: 0; margin: 0; max-width: none; }
+  .printing-sheet .sheet-table-wrap { overflow: visible; }
+  .printing-sheet .sheet-table { min-width: 0; font-size: 10pt; }
+  .printing-sheet .sheet-table th { background: none; }
+  .printing-sheet .sheet-table td input { padding: 0.3rem; }
+  .printing-sheet .sheet-table td input::placeholder, .printing-sheet .sheet-practicante input::placeholder { color: transparent; }
+  .printing-sheet .sheet-firma .btn-link { visibility: hidden; }
+  .printing-sheet .sheet-empty { display: none; }
+}
+
+/* ── Celular: tablas como tarjetas y Pagos más compacto ── */
+@media screen and (max-width: 768px) {
+  /* Pagos */
+  #btn-prev, #btn-next { display: none; }
+  .pagination-controls { padding: 0 1rem; }
+  #yearSummary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  #yearSummary .stat { padding: 0.6rem 0.5rem; align-items: center; text-align: center; }
+  #yearSummary .stat-value { font-size: 1.2rem; }
+  #yearSummary .stat-label { font-size: 0.68rem; }
+
+  /* Jugadores */
+  .players-table-container { overflow: visible; }
+  .players-table, .players-table tbody, .players-table tr, .players-table td { display: block; }
+  .players-table { min-width: 0; background: none; border: none; box-shadow: none; overflow: visible; }
+  .players-table thead { display: none; }
+
+  .players-table tbody tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .players-table tbody tr.is-editing { background: #eff6ff; border-color: var(--primary); }
+  .players-table td { padding: 0; border: none !important; }
+  .players-table td.player-name-td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .players-table td:nth-child(3),
+  .players-table td:nth-child(4),
+  .players-table td:nth-child(5) {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.55rem;
+    margin-top: 0.55rem;
+    border-top: 1px solid var(--border) !important;
+  }
+
+  .players-table td:nth-child(4) { margin-top: 0; }
+  .players-table td:nth-child(5) { margin-top: 0; }
+
+  .players-table td[data-label]:nth-child(n+3)::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-500);
+  }
+
+  .players-table td.actions-td { grid-row: 1; grid-column: 3; }
+  .players-table td.empty-row { grid-column: 1 / -1; }
+
+  /* Planilla */
+  .sheet-paper { padding: 1.25rem 0.9rem; }
+  .sheet-title { font-size: 0.85rem; }
+  .sheet-practicante { flex-wrap: wrap; }
+  .sheet-practicante input { flex-basis: 100%; max-width: none; }
+  .sheet-table-wrap { overflow: visible; }
+  .sheet-table, .sheet-table tbody, .sheet-table tr, .sheet-table td { display: block; }
+  .sheet-table { min-width: 0; }
+  .sheet-table thead { display: none; }
+
+  .sheet-table tbody tr {
+    position: relative;
+    margin-bottom: 0.9rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border-focus);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .sheet-table td {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    min-height: 2.6rem;
+  }
+
+  .sheet-table td:nth-last-child(2) { border-bottom: none; }
+
+  .sheet-table td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 6.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-500);
+  }
+
+  /* El primer campo deja lugar a la X de borrar, que va arriba a la derecha */
+  .sheet-table td:first-child { padding-right: 2rem; }
+  .sheet-table td input { padding: 0.5rem 0.25rem; }
+  .sheet-table td input[type="date"] { min-width: 0; }
+  .sheet-firma { width: auto; text-align: left; }
+  .sheet-firma img { margin: 0; height: 44px; }
+
+  .sheet-table td.sheet-actions {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.4rem;
+    min-height: 0;
+    width: auto;
+    padding: 0 !important;
+    border: none;
+  }
+
+  .sheet-empty td { display: block; }
+}

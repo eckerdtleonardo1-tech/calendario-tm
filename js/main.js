@@ -1,6 +1,7 @@
 import { initMonths } from './components/MonthCard.js';
 import { initPlayerManager } from './components/PlayerManager.js';
 import { initAttendance } from './components/AttendanceManager.js';
+import { initSheet } from './components/SheetManager.js';
 
 const VIEW_KEY = 'pagos_mensuales_vista';
 
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMonths();
   initPlayerManager();
   initAttendance();
+  initSheet();
 
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => showView(tab.dataset.view));

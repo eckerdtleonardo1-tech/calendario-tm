@@ -7,7 +7,7 @@
   <title>Gestión del Equipo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/style.css?v=3.2">
 </head>
 <body>
 
@@ -20,6 +20,9 @@
     </button>
     <button class="tab" role="tab" data-view="asistencia" aria-controls="view-asistencia">
       <span class="tab-icon" aria-hidden="true">✓</span> Asistencia
+    </button>
+    <button class="tab" role="tab" data-view="planilla" aria-controls="view-planilla">
+      <span class="tab-icon" aria-hidden="true">≡</span> Planilla
     </button>
   </nav>
 
@@ -115,6 +118,58 @@
         <div class="att-history" id="att-history"></div>
       </aside>
     </div>
+  </section>
+
+  <!-- ── Planilla ── -->
+  <section class="view" id="view-planilla" role="tabpanel" hidden>
+    <header class="header no-print">
+      <h1>Planilla</h1>
+      <p>Resumen de observaciones e intervenciones en clase</p>
+    </header>
+
+    <div class="sheet-toolbar no-print">
+      <button class="btn-add" id="sheet-add-row">+ Agregar fila</button>
+      <button class="btn-page" id="sheet-print">Imprimir / PDF</button>
+      <button class="btn-page btn-danger-ghost" id="sheet-clear">Vaciar planilla</button>
+      <span class="players-count" id="sheet-count"></span>
+    </div>
+
+    <div class="sheet-paper">
+      <h2 class="sheet-title">Planilla resumen de observaciones e intervenciones en clase</h2>
+      <label class="sheet-practicante">
+        <span>Practicante:</span>
+        <input type="text" id="sheet-practicante" placeholder="Nombre y apellido" autocomplete="off">
+      </label>
+      <div class="sheet-table-wrap">
+        <table class="sheet-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Club</th>
+              <th>Actividad</th>
+              <th>Día y horario</th>
+              <th>Profesor</th>
+              <th>Firma</th>
+              <th>Suspendida por</th>
+              <th class="no-print"></th>
+            </tr>
+          </thead>
+          <tbody id="sheet-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <dialog class="sign-dialog" id="sign-dialog">
+      <h3>Firma del profesor</h3>
+      <p>Dibujá la firma con el dedo o el mouse</p>
+      <canvas id="sign-canvas" width="600" height="220"></canvas>
+      <div class="sign-actions">
+        <button class="btn-page" id="sign-clear">Borrar</button>
+        <span class="spacer"></span>
+        <button class="btn-page" id="sign-cancel">Cancelar</button>
+        <button class="btn-add" id="sign-save">Guardar firma</button>
+      </div>
+    </dialog>
   </section>
 
   <script type="module" src="js/main.js"></script>

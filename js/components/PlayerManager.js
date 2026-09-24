@@ -59,11 +59,11 @@ function renderPlayers() {
     const tr = document.createElement('tr');
     if (player.id === editingId) tr.className = 'is-editing';
     tr.innerHTML = `
-      <td><span class="player-number-disp">${player.number === '-' ? '—' : '#' + escapeHtml(player.number)}</span></td>
-      <td class="player-name-td">${escapeHtml(player.name)}</td>
-      <td><span class="player-position-disp pos-${escapeHtml(normalize(player.position).replace(/\s+/g, '-'))}">${escapeHtml(player.position)}</span></td>
-      <td>${attHtml}</td>
-      <td>${payHtml}</td>
+      <td data-label="Dorsal"><span class="player-number-disp">${player.number === '-' ? '—' : '#' + escapeHtml(player.number)}</span></td>
+      <td class="player-name-td" data-label="Nombre">${escapeHtml(player.name)}</td>
+      <td data-label="Posición"><span class="player-position-disp pos-${escapeHtml(normalize(player.position).replace(/\s+/g, '-'))}">${escapeHtml(player.position)}</span></td>
+      <td data-label="Asistencia">${attHtml}</td>
+      <td data-label="Pago ${currentMonthName()}">${payHtml}</td>
       <td class="actions-td">
         <button class="btn-icon" data-action="edit" title="Editar" aria-label="Editar ${escapeHtml(player.name)}">✎</button>
         <button class="btn-delete" data-action="delete" title="Eliminar" aria-label="Eliminar ${escapeHtml(player.name)}">&times;</button>
