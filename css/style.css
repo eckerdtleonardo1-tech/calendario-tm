@@ -1224,3 +1224,36 @@ body {
   font-weight: 600;
   line-height: 1;
 }
+
+/* Aviso de error visible */
+.app-error {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  font-size: 0.85rem;
+}
+
+.app-error span { flex: 1 1 200px; word-break: break-word; }
+
+.app-error button {
+  border: none;
+  background: var(--danger);
+  color: #fff;
+  font: 600 0.8rem inherit;
+  font-family: inherit;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}

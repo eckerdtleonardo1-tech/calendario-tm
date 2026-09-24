@@ -1,6 +1,6 @@
-import { appData, saveData, notify, newId, sortedPlayers, attendanceStats } from '../store.js';
-import { escapeHtml, normalize } from '../utils.js';
-import { paymentStatusThisMonth, currentMonthName } from './MonthCard.js';
+import { appData, saveData, notify, newId, sortedPlayers, attendanceStats } from '../store.js?v=4';
+import { escapeHtml, normalize } from '../utils.js?v=4';
+import { paymentStatusThisMonth, currentMonthName } from './MonthCard.js?v=4';
 
 let editingId = null;
 

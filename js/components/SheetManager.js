@@ -1,5 +1,5 @@
-import { appData, saveData, newId } from '../store.js';
-import { toISODate } from '../utils.js';
+import { appData, saveData, newId } from '../store.js?v=4';
+import { toISODate } from '../utils.js?v=4';
 
 // Columnas de la planilla de observaciones (sin la firma, que se dibuja aparte)
 const FIELDS = [
@@ -43,10 +43,10 @@ function addRow() {
   rows.push({
     id: newId(),
     fecha: toISODate(new Date()),
-    club: last?.club || '',
-    actividad: last?.actividad || '',
-    horario: last?.horario || '',
-    profesor: last?.profesor || '',
+    club: last && last.club || '',
+    actividad: last && last.actividad || '',
+    horario: last && last.horario || '',
+    profesor: last && last.profesor || '',
     firma: '',
     suspendida: ''
   });

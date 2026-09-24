@@ -7,7 +7,7 @@
   <title>Gestión del Equipo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3.3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 
@@ -172,6 +172,27 @@
     </dialog>
   </section>
 
-  <script type="module" src="js/main.js"></script>
+  <!-- Muestra en pantalla cualquier error (útil en el celular, donde no hay consola) -->
+  <script>
+    window.showAppError = function (msg) {
+      var box = document.getElementById('app-error');
+      if (!box) {
+        box = document.createElement('div');
+        box.id = 'app-error';
+        box.className = 'app-error';
+        box.innerHTML = '<strong>Algo falló</strong><span></span><button type="button">Recargar</button>';
+        box.querySelector('button').onclick = function () { location.reload(); };
+        document.body.appendChild(box);
+      }
+      box.querySelector('span').textContent = msg;
+    };
+    window.addEventListener('error', function (e) {
+      window.showAppError((e.message || 'Error al cargar') + (e.filename ? ' (' + e.filename.split('/').pop() + ')' : ''));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      window.showAppError(String(e.reason && e.reason.message || e.reason));
+    });
+  </script>
+  <script type="module" src="js/main.js?v=4"></script>
 </body>
 </html>

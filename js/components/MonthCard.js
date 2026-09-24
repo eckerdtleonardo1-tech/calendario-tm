@@ -1,5 +1,5 @@
-import { appData, saveData, notify, sortedPlayers } from '../store.js';
-import { escapeHtml, normalize } from '../utils.js';
+import { appData, saveData, notify, sortedPlayers } from '../store.js?v=4';
+import { escapeHtml, normalize } from '../utils.js?v=4';
 
 export const MONTHS = [
   'Enero', 'Febrero', 'Marzo', 'Abril',

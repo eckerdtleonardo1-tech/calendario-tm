@@ -1,5 +1,5 @@
-import { appData, saveData, notify, sortedPlayers } from '../store.js';
-import { escapeHtml, toISODate, parseISODate, formatLongDate, formatShortDate } from '../utils.js';
+import { appData, saveData, notify, sortedPlayers } from '../store.js?v=4';
+import { escapeHtml, toISODate, parseISODate, formatLongDate, formatShortDate } from '../utils.js?v=4';
 
 // P = presente, A = ausente
 const STATES = [
