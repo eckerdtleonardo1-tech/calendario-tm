@@ -1057,7 +1057,21 @@ body {
 /* ── Impresión: sólo la hoja de la planilla ── */
 @media print {
   @page { size: A4 landscape; margin: 14mm; }
-  body.printing-sheet { background: #fff; }
+  /* min-height: 100vh mide la pantalla y no la hoja: en Safari/Android sobraba y salía una hoja en blanco */
+  html:has(body.printing-sheet), body.printing-sheet {
+    min-height: 0 !important;
+    height: auto !important;
+    background: #fff !important;
+    background-image: none !important;
+  }
+  /* Todo lo que no es la planilla queda fuera, incluidos elementos agregados al body por JS */
+  .printing-sheet > *:not(#view-planilla) { display: none !important; }
+  .printing-sheet #view-planilla > *:not(.sheet-paper) { display: none !important; }
+  .printing-sheet .sheet-paper { break-after: avoid; page-break-after: avoid; }
+  .printing-sheet .sheet-table { table-layout: fixed; width: 100% !important; }
+  .printing-sheet .sheet-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .printing-sheet .sheet-table td input { width: 100%; }
+  .printing-sheet .sheet-table input::-webkit-calendar-picker-indicator { display: none; }
   .printing-sheet .tabs, .printing-sheet .no-print, .printing-sheet .view:not(#view-planilla),
   .printing-sheet .sheet-actions, .printing-sheet .sign-dialog { display: none !important; }
   .printing-sheet #view-planilla { display: block !important; animation: none; }
