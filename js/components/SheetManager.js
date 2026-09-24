@@ -73,7 +73,15 @@ function renderRows() {
     `${rows.length} registro${rows.length === 1 ? '' : 's'}`;
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr class="sheet-empty"><td colspan="8">Todavía no hay registros. Tocá <strong>+ Agregar fila</strong> para empezar.</td></tr>`;
+    // Todo el recuadro es un botón: en el celular es lo primero que se toca
+    tbody.innerHTML = `<tr class="sheet-empty"><td colspan="8">
+      <button type="button" class="sheet-empty-btn">
+        <span class="sheet-empty-plus" aria-hidden="true">+</span>
+        <span>Todavía no hay registros</span>
+        <strong>Tocá acá para agregar la primera fila</strong>
+      </button>
+    </td></tr>`;
+    tbody.querySelector('.sheet-empty-btn').addEventListener('click', addRow);
     return;
   }
 
