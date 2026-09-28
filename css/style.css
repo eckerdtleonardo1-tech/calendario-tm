@@ -1271,3 +1271,26 @@ body {
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
+
+/* ── Pie con copia de seguridad ── */
+.backup-footer {
+  max-width: 900px;
+  margin: 1rem auto 3rem;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-500);
+  border-top: 1px solid var(--border);
+}
+
+.backup-footer strong { color: var(--text-700); }
+.backup-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.backup-msg { display: none; font-weight: 600; color: var(--success-text); }
+.backup-msg.visible { display: block; }
+.backup-msg.error { color: var(--danger-text); }
+
+@media print { .backup-footer { display: none !important; } }

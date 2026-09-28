@@ -7,7 +7,7 @@
   <title>Gestión del Equipo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 
@@ -171,6 +171,95 @@
       </div>
     </dialog>
   </section>
+
+  <!-- ── Copia de seguridad ── -->
+  <footer class="backup-footer">
+    <p>
+      <strong>Tus datos se guardan solo en este navegador.</strong>
+      Descargá una copia para no perderlos y poder pasarlos a la nueva versión de la app.
+    </p>
+    <div class="backup-actions">
+      <button type="button" class="btn-add" id="backup-download">Descargar copia de seguridad</button>
+      <button type="button" class="btn-page" id="backup-share" hidden>Compartir copia</button>
+    </div>
+    <p class="backup-msg" id="backup-msg" aria-live="polite"></p>
+  </footer>
+
+  <!-- Script común (no módulo) a propósito: funciona aunque el resto de la app falle al cargar -->
+  <script>
+    (function () {
+      var KEY = 'pagos_mensuales_data';
+
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      function today() {
+        var d = new Date();
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      }
+      function msg(text, isError) {
+        var el = document.getElementById('backup-msg');
+        el.textContent = text;
+        el.className = 'backup-msg visible' + (isError ? ' error' : '');
+      }
+
+      // Arma el archivo con los datos tal cual están guardados, más datos para reconocer el formato
+      function buildBackup() {
+        var raw = null;
+        try { raw = localStorage.getItem(KEY); } catch (e) {}
+        if (!raw) return null;
+        var data;
+        try { data = JSON.parse(raw); } catch (e) { data = { _raw: raw }; }
+        var backup = {
+          app: 'calendario-tm',
+          formato: 1,
+          exportado: new Date().toISOString(),
+          origen: location.href,
+          datos: data
+        };
+        var name = 'plantel-copia-' + today() + '.json';
+        var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        return { name: name, blob: blob };
+      }
+
+      function download() {
+        var b = buildBackup();
+        if (!b) { msg('No hay datos guardados en este navegador.', true); return; }
+        try {
+          var url = URL.createObjectURL(b.blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = b.name;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+          msg('Listo: se descargó "' + b.name + '". Guardalo en un lugar seguro.');
+        } catch (e) {
+          msg('No se pudo descargar (' + e.message + '). Probá con "Compartir copia".', true);
+        }
+      }
+
+      function share() {
+        var b = buildBackup();
+        if (!b) { msg('No hay datos guardados en este navegador.', true); return; }
+        var file = new File([b.blob], b.name, { type: 'application/json' });
+        navigator.share({ files: [file], title: 'Copia de seguridad', text: 'Copia de seguridad de la app' })
+          .then(function () { msg('Copia compartida.'); })
+          .catch(function (e) { if (e.name !== 'AbortError') msg('No se pudo compartir: ' + e.message, true); });
+      }
+
+      document.getElementById('backup-download').addEventListener('click', download);
+
+      // Compartir archivos sólo existe en algunos navegadores (sobre todo celulares)
+      try {
+        var probe = new File(['{}'], 'x.json', { type: 'application/json' });
+        if (navigator.canShare && navigator.canShare({ files: [probe] })) {
+          var btn = document.getElementById('backup-share');
+          btn.hidden = false;
+          btn.addEventListener('click', share);
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- Muestra en pantalla cualquier error (útil en el celular, donde no hay consola) -->
   <script>
